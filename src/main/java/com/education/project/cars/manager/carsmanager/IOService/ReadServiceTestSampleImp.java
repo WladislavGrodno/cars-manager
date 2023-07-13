@@ -7,7 +7,7 @@ import com.education.project.cars.manager.carsmanager.service.CarList;
 @Service
 public class ReadServiceTestSampleImp implements ReadService{
     @Override
-    public CarList carListReader(String fileName) {
+    public CarList carListRead(String fileName) {
         CarList garage = new CarList();
         garage.add(new Car(2002,"Mercedes", "w140", 15000));
         garage.add(new Car(1996,"Mercedes", "w140", 10000));
@@ -28,7 +28,13 @@ public class ReadServiceTestSampleImp implements ReadService{
     }
 
     @Override
-    public Car carReader(Long idc, String fileName) {
+    public Car carRead(Long idc, String fileName) {
+        return null;
+    }
+
+    @Override
+    public CarList carListCustomRead(
+            String sortBy, String filter, String fileName) {
         return null;
     }
 }

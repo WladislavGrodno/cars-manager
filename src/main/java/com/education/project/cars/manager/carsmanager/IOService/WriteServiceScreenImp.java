@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WriteServiceScreenImp implements WriteService{
     @Override
-    public CarList carListWriter(CarList list, String fileName) {
+    public CarList carListWrite(CarList list, String fileName) {
         System.out.printf(
                 "%21s. %15s: %15s, %5s. %20s%n",
                 "ИД номер", "Марка", "Модель", "Год", "Цена");
@@ -16,17 +16,17 @@ public class WriteServiceScreenImp implements WriteService{
     }
 
     @Override
-    public Car carWriter(Car car, String fileName) {
+    public Car carWrite(Car car, String fileName) {
         System.out.println(car);
         return car;
     }
 
     @Override
-    public Car carUpdater(Long idc, Car car, String table) {
+    public Car carUpdate(Long idc, Car car, String table) {
         return null;
     }
 
     @Override
-    public void carEraser(Long idc, String fileName) {
+    public void carErase(Long idc, String fileName) {
     }
 }

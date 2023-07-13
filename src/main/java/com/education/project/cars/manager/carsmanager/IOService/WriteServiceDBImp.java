@@ -3,7 +3,6 @@ import com.education.project.cars.manager.carsmanager.model.Car;
 import com.education.project.cars.manager.carsmanager.service.CarList;
 import com.education.project.cars.manager.carsmanager.service.DBPoolService;
 
-import java.math.BigDecimal;
 import java.util.Random;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,21 +26,20 @@ public class WriteServiceDBImp implements WriteService {
     }
 
     @Override
-    public CarList carListWriter(CarList list, String fileName) {
+    public CarList carListWrite(CarList list, String fileName) {
         CarList listOut = new CarList();
         list.forEach(car -> {
-            Car carOut = carWriter(car, fileName);
+            Car carOut = carWrite(car, fileName);
             if (carOut != null) listOut.add(carOut);
         });
         return listOut;
     }
 
     @Override
-    public Car carWriter(Car car, String table) {
+    public Car carWrite(Car car, String table) {
         Integer label = new Random().nextInt();
         do {
             long idCar = Math.abs(new Random().nextLong());
-            //car.setIdCar(new BigDecimal(idCar));
             car.setIdCar(idCar);
             log.debug("{\"newIDCar\": {}, \"label\": {}}", idCar, label);
             source.writeDB(
@@ -57,11 +55,11 @@ public class WriteServiceDBImp implements WriteService {
             );
         } while (source.getStatus() == -8);
         if (source.getStatus() != 0) return null;
-        return readService.carReader(car.getIdCar(), table);
+        return readService.carRead(car.getIdCar(), table);
     }
 
-    public Car carUpdater(Long idc, Car car, String table) {
-        Car carControl = readService.carReader(idc, table);
+    public Car carUpdate(Long idc, Car car, String table) {
+        Car carControl = readService.carRead(idc, table);
         if (carControl == null) return null;
 
         if (car.getYear() == -1) car.setYear(carControl.getYear());
@@ -83,11 +81,11 @@ public class WriteServiceDBImp implements WriteService {
                 )
         );
         if (source.getStatus() != 0) return null;
-        return readService.carReader(idc, table);
+        return readService.carRead(idc, table);
     }
 
     @Override
-    public void carEraser(Long idc, String table) {
+    public void carErase(Long idc, String table) {
         source.writeDB(
                 String.format("DELETE FROM %s WHERE Idc = %d;", table, idc));
     }

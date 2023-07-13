@@ -1,13 +1,11 @@
-package com.education.project.cars.manager.carsmanager.POSTController;
+package com.education.project.cars.manager.carsmanager.ApiController;
 
-import com.education.project.cars.manager.carsmanager.IOService.ReadService;
-import com.education.project.cars.manager.carsmanager.IOService.WriteService;
 import com.education.project.cars.manager.carsmanager.model.Car;
 
-
+import com.education.project.cars.manager.carsmanager.service.CarService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,19 +37,8 @@ public class CarsController {
     private final String table = "Garage";
 
     @Autowired
-    @Qualifier("writeServiceDBImp")
-    private WriteService carServiceOut;
-
-    @Autowired
-    @Qualifier("readServiceDBImp")
-    private ReadService carServiceIn;
-
-/*
-    @Autowired
-    private WriteServiceDBImp carServiceOut;
-    @Autowired
-    private ReadServiceDBImp carServiceIn;
- */
+    @Qualifier("carServiceDBImp")
+    private CarService carService;
 
     /**
      * логика создания машины в БД и возвращение ее в ответе
@@ -69,7 +57,7 @@ public class CarsController {
     public Car createCar(@RequestBody Car car) {
         log.info("{\"insertCar\": {\"car\": \"{}\", \"table\": \"{}\"}}",
                 car, table);
-        return carServiceOut.carWriter(car, table);
+        return carService.carWrite(car, table);
     }
 
     /**
@@ -90,7 +78,7 @@ public class CarsController {
         log.info("{\"updateCar\": " +
                 "{\"id\": {}, \"car\": \"{}\", \"table\": \"{}\"}}",
                 id, car, table);
-        return carServiceOut.carUpdater(id, car, table);
+        return carService.carUpdate(id, car, table);
     }
 
     /**
@@ -107,8 +95,50 @@ public class CarsController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
     public Collection<Car> getCars() {
         log.info("{\"returnTable\": {\"table\": \"{}\"}}", table);
-        return carServiceIn.carListReader(table);
+        return carService.carListRead(table);
     }
+
+    /**
+     * вернуть фильтрованный и упорядоченный список машин
+     * @param sortBy список параметров сортировки: <br>
+     *               [field for sort by.[sort direction: ASC | DESC]].
+     *               [field for sort by.[sort direction: ASC. | DESC.]]
+     *               ...
+     * @param filter параметры фильтрации:
+     *               ((condition: equal | not_equal).field.value) | .
+     * @return фильтрованный и упорядоченный список машин
+     */
+    @GetMapping("/carsCustom")
+    @Operation(
+            summary = "Returns selected cars",
+            description = "Returns selected cars from table")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "The database is empty")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public Collection<Car> getCustomCars(
+            @Parameter(description =
+                    "List of field for sort with direction\n" +
+                            "example: brand.year.desc")
+            @RequestParam("sortBy")
+            String sortBy,
+            @Parameter(description =
+                    "equal.brand.VW\n" +
+                    "not_equal.brand.Opel")
+            @RequestParam("filter"
+            ) String filter
+            ) {
+        log.info("{\"returnTable\": {" +
+                        "\"sort\": {}, " +
+//                        "\"order\": \"{}\", " +
+                        "\"filter\": \"{}\", " +
+                        "\"table\": \"{}\"}}",
+//                sortBy, order, filter, table);
+                sortBy, filter, table);
+//        return carService.carListCustomRead(sortBy, order, filter, table);
+        return carService.carListCustomRead(sortBy, filter, table);
+    }
+
 
     /**
      * вернуть машину по id
@@ -125,7 +155,7 @@ public class CarsController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
     public Car getCarById(@PathVariable Long id) {
         log.info("{\"returnCar\": {\"id\": {}, \"table\": \"{}\"}}", id, table);
-        return carServiceIn.carReader(id, table);
+        return carService.carRead(id, table);
     }
 
     /**
@@ -142,6 +172,6 @@ public class CarsController {
 
     public void deleteCarById(@PathVariable Long id) {
         log.info("{\"deleteCar\": {\"id\": {}, \"table\": \"{}\"}}", id, table);
-        carServiceOut.carEraser(id, table);
+        carService.carErase(id, table);
     }
 }

@@ -7,9 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,27 +16,29 @@ public class Car {
 
     @Schema(
             description = "Идентификатор автомобиля",
-//            pattern = "^.{0,100}",
             example = "1525430455740003903"
     )
-//    private BigDecimal idCar = new BigDecimal("-1");
     private Long idCar = -1L;
+
     @Schema(
             description = "Год производства",
 //            pattern = "^.{0,100}",
             example = "1127"
     )
     private Integer year = -1;
+
     @Schema(
             description = "Изготовитель",
             example = "Русско-Балтiйский Вагонный Заводъ въ Ригъ"
     )
     private String brand = "empty";
+
     @Schema(
             description = "Модель",
             example = "С24/40"
     )
     private String model = "empty";
+
     @Schema(
             description = "Цена",
 //            pattern = "^.{0,100}",

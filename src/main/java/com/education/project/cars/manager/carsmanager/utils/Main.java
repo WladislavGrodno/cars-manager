@@ -34,10 +34,10 @@ public class Main {
             System.out.println(2);
             source.createDB(currentTable);
             System.out.println(3);
-            testSampleIn.carListReader("");
+            testSampleIn.carListRead("");
             System.out.println(4);
-            postgresOut.carListWriter(
-                    testSampleIn.carListReader(""), currentTable);
+            postgresOut.carListWrite(
+                    testSampleIn.carListRead(""), currentTable);
             System.out.println(5);
 
 

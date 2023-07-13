@@ -11,7 +11,7 @@ import java.io.IOException;
 @Service
 public class ReadServiceTxtAltImp implements ReadService{
     @Override
-    public CarList carListReader(String file) {
+    public CarList carListRead(String file) {
         try(BufferedReader reader =
                     new BufferedReader(new FileReader(file))) {
             if (reader.readLine().equals("CarList object")){
@@ -39,7 +39,13 @@ public class ReadServiceTxtAltImp implements ReadService{
     }
 
     @Override
-    public Car carReader(Long idc, String fileName) {
+    public Car carRead(Long idc, String fileName) {
+        return null;
+    }
+
+    @Override
+    public CarList carListCustomRead(
+            String sortBy, String filter, String fileName) {
         return null;
     }
 }
