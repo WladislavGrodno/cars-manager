@@ -1,18 +1,15 @@
 package com.education.project.cars.manager.carsmanager.service;
 
+import com.education.project.cars.manager.carsmanager.model.Car;
+
 public interface CarService {
-    CarList getMaxCostCar(CarList list);
-    CarList getMinCostCar(CarList list);
-    CarList findBrandList(String searchBrand, CarList list);
-    CarList findModelList(String searchModel, CarList list);
-    CarList getListByPriceRange(int startPrice, int endPrice, CarList list);
-    CarList sortListByPrice(CarList list);
-    CarList sortListByBrand(CarList list);
-    default void printCarList(CarList list){
-        list.forEach(car -> {
-            String strF = String.format("Year: %d, brand: %s, model: %s, cost: %d\n",
-                    car.getYear(), car.getBrand(), car.getModel(), car.getCost());
-            System.out.print(strF);
-        });
-    }
+    CarList carListRead(String fileName);
+    CarList carListCustomRead(
+            String sortBy, String filter, String fileName);
+    Car carRead(Long idc, String fileName);
+    CarList carListWrite(CarList list, String fileName);
+    Car carWrite(Car car, String fileName);
+    Car carUpdate(Long idc, Car car, String table);
+    void carErase(Long idc, String fileName);
+
 }

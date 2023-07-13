@@ -4,6 +4,9 @@ import com.education.project.cars.manager.carsmanager.model.Car;
 import com.education.project.cars.manager.carsmanager.service.CarList;
 
 public interface ReadService {
-    CarList carListReader(String fileName);
-    Car carReader(Long idc, String fileName);
+    CarList carListRead(String fileName);
+    CarList carListCustomRead(
+            String sortBy, String filter, String fileName);
+
+    Car carRead(Long idc, String fileName);
 }

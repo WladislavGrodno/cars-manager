@@ -4,9 +4,8 @@ import com.education.project.cars.manager.carsmanager.model.Car;
 import com.education.project.cars.manager.carsmanager.service.CarList;
 
 public interface WriteService {
-    CarList carListWriter(CarList list, String fileName);
-    Car carWriter(Car car, String fileName);
-    Car carUpdater(Long idc, Car car, String table);
-    void carEraser(Long idc, String fileName);
-
+    CarList carListWrite(CarList list, String fileName);
+    Car carWrite(Car car, String fileName);
+    Car carUpdate(Long idc, Car car, String table);
+    void carErase(Long idc, String fileName);
 }

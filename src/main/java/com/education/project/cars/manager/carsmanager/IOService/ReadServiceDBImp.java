@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.education.project.cars.manager.carsmanager.service.CarList;
 import com.education.project.cars.manager.carsmanager.service.DBPoolService;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -22,14 +21,124 @@ public class ReadServiceDBImp implements ReadService{
     private DBPoolService source;
 
     @Override
-    public CarList carListReader(String fileName) {
+    public CarList carListRead(String fileName) {
         String query = String.format(
                 "SELECT Idc, Year, Brand, Model, Cost FROM %s;", fileName);
         source.readDB(query);
         return carListGetFromRS(source.getRs());
     }
 
-    public Car carReader(Long idc, String fileName) {
+
+    private String orderList(String[] list, int i){
+        if (i >= list.length) return "";
+        switch (list[i].toLowerCase()) {
+            case "year", "brand", "model", "cost" -> {
+                if (i + 1 >= list.length) return list[i];
+                switch (list[i + 1].toLowerCase()) {
+                    case "asc", "desc" -> {
+                        String s = orderList(list, i + 2);
+                        switch (s) {
+                            case "b" -> {
+                                return s;
+                            }
+                            case "" -> {
+                                return list[i].toUpperCase()
+                                        + " " + list[i + 1].toUpperCase();
+                            }
+                            default -> {
+                                return list[i].toUpperCase()
+                                        + " " + list[i + 1].toUpperCase()
+                                        + ", " + s;
+                            }
+                        }
+                    }
+                    default -> {
+                        String s = orderList(list, i + 1);
+                        switch (s) {
+                            case "b" -> {
+                                return s;
+                            }
+                            case "" -> {
+                                return list[i].toUpperCase();
+                            }
+                            default -> {
+                                return list[i].toUpperCase() + ", " + s;
+                            }
+                        }
+                    }
+                }
+            }
+            default -> {return "b";}
+        }
+    }
+    private String orderList(String[] list){
+        return orderList(list, 0);
+    }
+    private String filterList(String[] list){
+        switch (list.length) {
+            case 0 -> {return "";}
+            case 3 -> {
+                String condition = list[0].toLowerCase();
+                switch (condition) {
+                    case "equal", "not_equal" -> {
+                        String ethanol;
+                        switch (list[1].toLowerCase()) {
+                            case "brand", "model" ->
+                                    ethanol = "'" + list[2] + "'";
+                            case "year", "cost" ->
+                                    ethanol = list[2];
+                            default -> {return "b";}
+                        }
+                        return list[1] +
+                                ((condition.equals("equal")) ? " = " : " <> ") +
+                                ethanol;
+                    }
+            /*
+            case "not_equal" -> {}
+            case "between" -> {
+                source.readDB("SELECT Year, Brand, Model, Cost FROM " + table +
+                        " WHERE " + field + " BETWEEN " + min + " AND " + max + ";");
+            }
+            case "not_between" -> {}
+             */
+                    default -> {return "b";}
+                }
+            }
+            default -> {return "b";}
+        }
+    }
+
+    @Override
+    public CarList carListCustomRead(
+            String sortBy, String filter, String fileName) {
+
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT Idc, Year, Brand, Model, Cost FROM ").append(fileName);
+
+        String sortPhrase = orderList(sortBy.split("\\."));
+        String filterPhrase = filterList(filter.split("\\."));
+
+        switch (filterPhrase){
+            case "b" -> {return null;}
+            case "" -> {}
+            default -> query.append(" WHERE ").append(filterPhrase);
+        }
+
+        switch (sortPhrase){
+            case "b" -> {return null;}
+            case "" -> {}
+            default -> query.append(" ORDER BY ").append(sortPhrase);
+        }
+
+        query.append(";");
+
+        source.readDB(query.toString());
+        return carListGetFromRS(source.getRs());
+    }
+
+
+    @Override
+    public Car carRead(Long idc, String fileName) {
         String query = String.format(
                 "SELECT Idc, Year, Brand, Model, Cost " +
                         "FROM %s WHERE Idc=%d;", fileName, idc);
@@ -45,7 +154,6 @@ public class ReadServiceDBImp implements ReadService{
         try {
             while (rs.next()) {
                 Car car = new Car();
-                //car.setIdCar(new BigDecimal(rs.getLong("Idc")));
                 car.setIdCar(rs.getLong("Idc"));
                 car.setYear(rs.getInt("Year"));
                 car.setBrand(rs.getString("Brand"));

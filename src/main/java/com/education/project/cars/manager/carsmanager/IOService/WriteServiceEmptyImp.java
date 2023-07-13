@@ -7,21 +7,20 @@ import com.education.project.cars.manager.carsmanager.service.CarList;
 @Service
 public class WriteServiceEmptyImp implements WriteService{
     @Override
-    public CarList carListWriter(CarList list, String fileName) {
+    public CarList carListWrite(CarList list, String fileName) {
         return list;
     }
 
     @Override
-    public Car carWriter(Car car, String fileName) {
+    public Car carWrite(Car car, String fileName) {
         return car;
     }
 
     @Override
-    public void carEraser(Long idc, String fileName) {
-    }
+    public void carErase(Long idc, String fileName) {}
 
     @Override
-    public Car carUpdater(Long idc, Car car, String table) {
+    public Car carUpdate(Long idc, Car car, String table) {
         return car;
     }
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 public class WriteServiceTxtAltImp implements WriteService{
 
     @Override
-    public CarList carListWriter(CarList cars, String file) {
+    public CarList carListWrite(CarList cars, String file) {
         try(BufferedWriter writer =
                     new BufferedWriter(new FileWriter(file, false))) {
             writer.write("CarList object\n");
@@ -38,16 +38,15 @@ public class WriteServiceTxtAltImp implements WriteService{
     }
 
     @Override
-    public Car carWriter(Car car, String fileName) {
+    public Car carWrite(Car car, String fileName) {
         return null;
     }
 
     @Override
-    public Car carUpdater(Long idc, Car car, String table) {
+    public Car carUpdate(Long idc, Car car, String table) {
         return null;
     }
 
     @Override
-    public void carEraser(Long idc, String fileName) {
-    }
+    public void carErase(Long idc, String fileName) {}
 }

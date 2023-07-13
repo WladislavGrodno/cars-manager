@@ -12,7 +12,7 @@ public class ReadServiceJsonAltImp implements ReadService{
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Override
-    public CarList carListReader(String file) {
+    public CarList carListRead(String file) {
         try {
             return objectMapper.readValue(file, CarList.class);
         }
@@ -24,8 +24,13 @@ public class ReadServiceJsonAltImp implements ReadService{
     }
 
     @Override
-    public Car carReader(Long idc, String fileName) {
+    public Car carRead(Long idc, String fileName) {
         return null;
     }
 
+    @Override
+    public CarList carListCustomRead(
+            String sortBy, String filter, String fileName) {
+        return null;
+    }
 }
