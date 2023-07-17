@@ -34,8 +34,6 @@ import java.util.Collection;
 @Tag(name = "Cars-manager API")
 //@ApiResponse
 public class CarsController {
-    private final String table = "Garage";
-
     @Autowired
     @Qualifier("carServiceDBImp")
     private CarService carService;
@@ -55,9 +53,9 @@ public class CarsController {
     @ApiResponse(responseCode = "404", description = "The car was not created")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     public Car createCar(@RequestBody Car car) {
-        log.info("{\"insertCar\": {\"car\": \"{}\", \"table\": \"{}\"}}",
-                car, table);
-        return carService.carWrite(car, table);
+        log.info("{\"insertCar\": {\"car\": \"{}\"}}",
+                car);
+        return carService.carWrite(car);
     }
 
     /**
@@ -75,10 +73,8 @@ public class CarsController {
     @ApiResponse(responseCode = "404", description = "The car was not found")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     public Car updateCar(@RequestBody Car car, @PathVariable Long id) {
-        log.info("{\"updateCar\": " +
-                "{\"id\": {}, \"car\": \"{}\", \"table\": \"{}\"}}",
-                id, car, table);
-        return carService.carUpdate(id, car, table);
+        log.info("{\"updateCar\": {\"id\": {}, \"car\": \"{}\"}}", id, car);
+        return carService.carUpdate(id, car);
     }
 
     /**
@@ -94,8 +90,8 @@ public class CarsController {
     @ApiResponse(responseCode = "404", description = "The database is empty")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     public Collection<Car> getCars() {
-        log.info("{\"returnTable\": {\"table\": \"{}\"}}", table);
-        return carService.carListRead(table);
+        log.info("{\"returnTable\": {\"Garage\"}}");
+        return carService.carListRead();
     }
 
     /**
@@ -130,13 +126,10 @@ public class CarsController {
             ) {
         log.info("{\"returnTable\": {" +
                         "\"sort\": {}, " +
-//                        "\"order\": \"{}\", " +
-                        "\"filter\": \"{}\", " +
-                        "\"table\": \"{}\"}}",
-//                sortBy, order, filter, table);
-                sortBy, filter, table);
-//        return carService.carListCustomRead(sortBy, order, filter, table);
-        return carService.carListCustomRead(sortBy, filter, table);
+                        "\"filter\": \"{}\"" +
+                        "}}",
+                sortBy, filter);
+        return carService.carListCustomRead(sortBy, filter);
     }
 
 
@@ -154,8 +147,8 @@ public class CarsController {
     @ApiResponse(responseCode = "404", description = "The car was not found")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     public Car getCarById(@PathVariable Long id) {
-        log.info("{\"returnCar\": {\"id\": {}, \"table\": \"{}\"}}", id, table);
-        return carService.carRead(id, table);
+        log.info("{\"returnCar\": {\"id\": {}}}", id);
+        return carService.carRead(id);
     }
 
     /**
@@ -171,7 +164,7 @@ public class CarsController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
 
     public void deleteCarById(@PathVariable Long id) {
-        log.info("{\"deleteCar\": {\"id\": {}, \"table\": \"{}\"}}", id, table);
-        carService.carErase(id, table);
+        log.info("{\"deleteCar\": {\"id\": {}}}", id);
+        carService.carErase(id);
     }
 }

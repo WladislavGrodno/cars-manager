@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+//?createDatabaseIfNotExist=true
+
 @Slf4j
 @Getter
 @Service
@@ -27,7 +29,6 @@ public class DBPoolService {
     private int initialConnections = 20;
 
     private int status = 1;
-    //private String tableName;
 
     public DBPoolService(){
          initConnection();

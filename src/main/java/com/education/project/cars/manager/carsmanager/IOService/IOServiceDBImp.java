@@ -11,20 +11,19 @@ import com.education.project.cars.manager.carsmanager.service.DBPoolService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 @Slf4j
 @Setter
 @Getter
 @Service
-public class ReadServiceDBImp implements ReadService{
+public class IOServiceDBImp implements IOService{
     @Autowired
     private DBPoolService source;
 
     @Override
-    public CarList carListRead(String fileName) {
-        String query = String.format(
-                "SELECT Idc, Year, Brand, Model, Cost FROM %s;", fileName);
-        source.readDB(query);
+    public CarList carListRead() {
+        source.readDB("SELECT Idc, Year, Brand, Model, Cost FROM Garage;");
         return carListGetFromRS(source.getRs());
     }
 
@@ -109,11 +108,10 @@ public class ReadServiceDBImp implements ReadService{
     }
 
     @Override
-    public CarList carListCustomRead(
-            String sortBy, String filter, String fileName) {
+    public CarList carListCustomRead(String sortBy, String filter) {
 
         StringBuilder query = new StringBuilder();
-        query.append("SELECT Idc, Year, Brand, Model, Cost FROM ").append(fileName);
+        query.append("SELECT Idc, Year, Brand, Model, Cost FROM Garage");
 
         String sortPhrase = orderList(sortBy.split("\\."));
         String filterPhrase = filterList(filter.split("\\."));
@@ -138,10 +136,73 @@ public class ReadServiceDBImp implements ReadService{
 
 
     @Override
-    public Car carRead(Long idc, String fileName) {
+    public CarList carListWrite(CarList list) {
+        CarList listOut = new CarList();
+        list.forEach(car -> {
+            Car carOut = carWrite(car);
+            if (carOut != null) listOut.add(carOut);
+        });
+        return listOut;
+    }
+
+    @Override
+    public Car carWrite(Car car) {
+        Integer label = new Random().nextInt();
+        do {
+            long idCar = Math.abs(new Random().nextLong());
+            car.setIdCar(idCar);
+            log.debug("{\"newIDCar\": {}, \"label\": {}}", idCar, label);
+            source.writeDB(
+                    String.format("INSERT INTO Garage " +
+                                    "(IDC, Year, Brand, Model, Cost) VALUES " +
+                                    "(%d, %d, '%s', '%s', %d);",
+                            car.getIdCar(),
+                            car.getYear(),
+                            car.getBrand(),
+                            car.getModel(),
+                            car.getCost())
+            );
+        } while (source.getStatus() == -8);
+        if (source.getStatus() != 0) return null;
+        return carRead(car.getIdCar());
+    }
+
+    public Car carUpdate(Long idc, Car car) {
+        Car carControl = carRead(idc);
+        if (carControl == null) return null;
+
+        if (car.getYear() == -1) car.setYear(carControl.getYear());
+        if (car.getBrand().equals("empty")) car.setBrand(carControl.getBrand());
+        if (car.getModel().equals("empty")) car.setModel(carControl.getModel());
+        if (car.getCost() == -1) car.setCost(carControl.getCost());
+
+        source.writeDB(
+                String.format(
+                        "UPDATE Garage SET (Idc, Year, Brand, Model, Cost) = " +
+                                "(%d, %d, '%s', '%s', %d) WHERE Idc = %d;",
+                        idc,
+                        car.getYear(),
+                        car.getBrand(),
+                        car.getModel(),
+                        car.getCost(),
+                        idc
+                )
+        );
+        if (source.getStatus() != 0) return null;
+        return carRead(idc);
+    }
+
+    @Override
+    public void carErase(Long idc) {
+        source.writeDB(
+                String.format("DELETE FROM Garage WHERE Idc = %d;", idc));
+    }
+
+    @Override
+    public Car carRead(Long idc) {
         String query = String.format(
                 "SELECT Idc, Year, Brand, Model, Cost " +
-                        "FROM %s WHERE Idc=%d;", fileName, idc);
+                        "FROM Garage WHERE Idc=%d;", idc);
         source.readDB(query);
         CarList cars = carListGetFromRS(source.getRs());
         if (cars.size() == 1) return cars.get(0);

@@ -1,7 +1,7 @@
 package com.education.project.cars.manager.carsmanager.utils;
 
+import com.education.project.cars.manager.carsmanager.IOService.IOServiceDBImp;
 import com.education.project.cars.manager.carsmanager.IOService.ReadServiceTestSampleImp;
-import com.education.project.cars.manager.carsmanager.IOService.WriteServiceDBImp;
 import com.education.project.cars.manager.carsmanager.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +21,7 @@ public class Main {
     ReadServiceTestSampleImp testSampleIn;
 
     @Autowired
-    WriteServiceDBImp postgresOut;
+    IOServiceDBImp postgresOut;
 
 
 //    @PostConstruct
@@ -37,7 +37,7 @@ public class Main {
             testSampleIn.carListRead("");
             System.out.println(4);
             postgresOut.carListWrite(
-                    testSampleIn.carListRead(""), currentTable);
+                    testSampleIn.carListRead(""));
             System.out.println(5);
 
 
