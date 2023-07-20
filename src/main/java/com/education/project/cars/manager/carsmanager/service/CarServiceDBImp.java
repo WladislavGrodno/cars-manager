@@ -1,7 +1,6 @@
 package com.education.project.cars.manager.carsmanager.service;
 
-import com.education.project.cars.manager.carsmanager.IOService.ReadService;
-import com.education.project.cars.manager.carsmanager.IOService.WriteService;
+import com.education.project.cars.manager.carsmanager.IOService.IOService;
 import com.education.project.cars.manager.carsmanager.model.Car;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,53 +11,43 @@ import org.springframework.stereotype.Service;
 @Service
 public class CarServiceDBImp implements CarService{
     @Autowired
-    @Qualifier("writeServiceDBImp")
-    private WriteService carServiceOut;
-
-    @Autowired
-    @Qualifier("readServiceDBImp")
-    private ReadService carServiceIn;
-
-    /*
-    @Autowired
-    @Qualifier("carServiceDBAltImp")
-    private CarService carService;
-     */
+    @Qualifier("IOServiceDBImp")
+    private IOService carService;
 
     @Override
-    public CarList carListRead(String fileName) {
-        return carServiceIn.carListRead(fileName);
+    public CarList carListRead() {
+        return carService.carListRead();
     }
 
     @Override
     public CarList carListCustomRead(
-            String sortBy, String filter, String fileName) {
-        return carServiceIn.carListCustomRead(sortBy, filter, fileName);
+            String sortBy, String filter) {
+        return carService.carListCustomRead(sortBy, filter);
     }
 
     @Override
-    public Car carRead(Long idc, String fileName) {
-        return carServiceIn.carRead(idc, fileName);
+    public Car carRead(Long idc) {
+        return carService.carRead(idc);
     }
 
     @Override
-    public CarList carListWrite(CarList list, String fileName) {
-        return carServiceOut.carListWrite(list, fileName);
+    public CarList carListWrite(CarList list) {
+        return carService.carListWrite(list);
     }
 
     @Override
-    public Car carWrite(Car car, String fileName) {
-        return carServiceOut.carWrite(car, fileName);
+    public Car carWrite(Car car) {
+        return carService.carWrite(car);
     }
 
     @Override
-    public Car carUpdate(Long idc, Car car, String table) {
-        return carServiceOut.carUpdate(idc, car, table);
+    public Car carUpdate(Long idc, Car car) {
+        return carService.carUpdate(idc, car);
     }
 
     @Override
-    public void carErase(Long idc, String fileName) {
-        carServiceOut.carErase(idc, fileName);
+    public void carErase(Long idc) {
+        carService.carErase(idc);
     }
 
 }
