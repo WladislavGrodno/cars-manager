@@ -1,0 +1,36 @@
+databaseChangeLog:
+- changeSet:
+    id: create-table-garage-1
+    author: wladislav
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: garage_pkey
+            name: idc
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: year
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: brand
+            type: VARCHAR(60)
+        - column:
+            constraints:
+              nullable: false
+            name: model
+            type: VARCHAR(60)
+        - column:
+            constraints:
+              nullable: false
+            name: cost
+            type: INTEGER
+        tableName: garage
