@@ -1,14 +1,10 @@
 databaseChangeLog:
 - changeSet:
-    id: 2
+    id: add-test-data-2
     author: wladislav
     changes:
     - loadData:
         columns:
-        - column:
-            header: id
-            name: id
-            type: NUMERIC
         - column:
             header: idc
             name: idc
